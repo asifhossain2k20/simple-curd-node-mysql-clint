@@ -13,6 +13,14 @@ function App() {
   const [infos,setInfos]=useState([])
 
   const [newWage, setNewWage] = useState(0);
+  const [newName,setNewName]=useState('');
+  const [newCountry,setNewCountry]=useState('');
+  const [newPosition,setNewPosition]=useState('');
+  const [newAge,setNewAge]=useState(0)
+
+
+  const [update,setUpdate]=useState(false)
+ 
 
   const getInfo=()=>{
     Axios.get('http://localhost:3001/employees')
@@ -34,17 +42,17 @@ function App() {
   }
 
   const updateEmployeeWage = (id) => {
-    Axios.put("http://localhost:3001/update", { wage: newWage, id: id }).then(
+    Axios.put("http://localhost:3001/update", {country: newCountry,name:newName, wage: newWage,age: newAge, id: id }).then(
       (response) => {
         setInfos(
           infos.map((val) => {
             return val.id == id
               ? {
                   id: val.id,
-                  name: val.name,
-                  country: val.country,
-                  age: val.age,
-                  position: val.position,
+                  name: newName,
+                  country: newCountry,
+                  age: newAge,
+                  position:  newPosition,
                   wage: newWage,
                 }
               : val;
@@ -96,9 +104,48 @@ function App() {
                         <h3>Country: {info.country}</h3>
                         <h3>Position: {info.position}</h3>
                         <h3>Salary: ${info.wage}</h3>
+                  
+                  {
+                    update ? <div>
+                                              <input
+                          type="text"
+                          placeholder="Update Your Name"
+                          defaultValue={name}
+                          onChange={(event) => {
+                            setNewName(event.target.value);
+                          }}
+                        />
+                                              
+                        <input
+                          type="text"
+                          placeholder="Update Your Age"
+                          defaultValue={age}
+                          onChange={(event) => {
+                            setNewAge(event.target.value);
+                          }}
+                        />
+                        <input
+                          type="text"
+                          placeholder="Update Your Country"
+                          defaultValue={country}
+                          onChange={(event) => {
+                            setNewCountry(event.target.value);
+                          }}
+                        />
+    
+                        <input
+                          type="text"
+                          placeholder="Update Your Position"
+                          defaultValue={position}
+                          onChange={(event) => {
+                            setNewPosition(event.target.value);
+                          }}
+                        />
+                        
                         <input
                           type="text"
                           placeholder="Update Your Salary"
+                          defaultValue={wage}
                           onChange={(event) => {
                             setNewWage(event.target.value);
                           }}
@@ -106,19 +153,32 @@ function App() {
                         <button style={{height:'50px',width:'150px' ,margin:'10px'}}
                           onClick={() => {
                             updateEmployeeWage(info.id);
+                            setUpdate(false);
                           }}
                         >
                           {" "}
                           Update
                         </button>
-                        <button style={{height:'50px',width:'150px'}}
+                        
+                    </div>:<div><h1></h1></div>
+                  }
+
+                     </div>
+                     <button style={{height:'50px',width:'150px',backgroundColor:'red'}}
                           onClick={() => {
                             deleteEmployee(info.id);
                           }}
                         >
                           Delete
                         </button>
-                     </div>
+                        <button style={{height:'50px',width:'150px',backgroundColor:'green'}}
+                          onClick={() => {
+                            setUpdate(true);
+                          }}
+                        >
+                          Update
+                        </button>
+                        
                 </div>
             })
           }
